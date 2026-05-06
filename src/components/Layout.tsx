@@ -25,20 +25,20 @@ export const Layout: React.FC<LayoutProps> = ({ children, activePage, setActiveP
   ];
 
   return (
-    <div className="flex min-h-screen bg-slate-50 dark:bg-[#0F172A] text-slate-900 dark:text-white transition-colors duration-300">
-      {/* Sidebar - Hidden on mobile, shown on desktop */}
-      <aside className="hidden lg:flex flex-col w-64 bg-white dark:bg-[#1E293B] border-r border-slate-200 dark:border-[#334155] sticky top-0 h-screen transition-colors duration-300 shadow-xl dark:shadow-none">
-        <div className="p-6">
-          <div className="flex items-center gap-2 mb-2">
-            <div className={cn("w-3 h-3 rounded-full", isOnline ? "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" : "bg-rose-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]")} />
-            <span className={cn("text-[10px] font-black uppercase tracking-widest", isOnline ? "text-emerald-600 dark:text-emerald-500" : "text-rose-600 dark:text-rose-500")}>
-              {isOnline ? "TERHUBUNG" : "TERPUTUS"}
+    <div className="flex min-h-screen bg-slate-50 dark:bg-[#0B0F1A] text-slate-900 dark:text-slate-100 transition-colors duration-300">
+      {/* Sidebar - Compact and sleek */}
+      <aside className="hidden lg:flex flex-col w-60 bg-white dark:bg-[#111827] border-r border-slate-200 dark:border-white/5 sticky top-0 h-screen transition-colors duration-300 shadow-sm dark:shadow-none">
+        <div className="p-5">
+          <div className="flex items-center gap-2 mb-1.5">
+            <div className={cn("w-2 h-2 rounded-full", isOnline ? "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)]" : "bg-rose-500 shadow-[0_0_8px_rgba(239,68,68,0.4)]")} />
+            <span className={cn("text-[9px] font-black uppercase tracking-[0.2em]", isOnline ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400")}>
+              {isOnline ? "Terhubung" : "Terputus"}
             </span>
           </div>
-          <h1 className="text-2xl font-black tracking-tighter text-slate-900 dark:text-white">🥤 Sumber Jaya</h1>
+          <h1 className="text-xl font-black tracking-tighter text-slate-900 dark:text-white uppercase">🥤 SUMBER JAYA</h1>
         </div>
 
-        <nav className="flex-1 px-4 space-y-1">
+        <nav className="flex-1 px-3 space-y-1">
           {menuItems.map((item) => (
             <button
               key={item.id}
@@ -46,58 +46,58 @@ export const Layout: React.FC<LayoutProps> = ({ children, activePage, setActiveP
               className={cn(
                 "flex items-center gap-3 w-full px-4 py-3 rounded-xl transition-all duration-200 border",
                 activePage === item.id 
-                  ? "bg-blue-600/10 text-blue-600 border-blue-500/50 dark:bg-blue-600/20 dark:text-blue-400" 
-                  : "text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white border-transparent"
+                  ? "bg-blue-600 text-white border-blue-500 shadow-lg shadow-blue-500/20" 
+                  : "text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white border-transparent"
               )}
             >
-              <item.icon className="w-5 h-5 font-bold" />
-              <span className="font-bold text-xs uppercase tracking-widest">{item.label}</span>
+              <item.icon className="w-5 h-5" />
+              <span className="font-bold text-sm uppercase tracking-wider">{item.label}</span>
             </button>
           ))}
         </nav>
 
-        <div className="p-4 mt-auto space-y-2">
+        <div className="p-4 space-y-2 mb-2">
           <button 
             onClick={onRefresh}
-            className="flex items-center justify-center gap-2 w-full py-3 bg-blue-600 dark:bg-[#334155] hover:bg-blue-700 dark:hover:bg-[#475569] text-white rounded-xl transition-colors font-black text-[10px] uppercase tracking-widest shadow-lg shadow-blue-500/20 dark:shadow-none"
+            className="flex items-center justify-center gap-2 w-full py-2.5 bg-slate-900 dark:bg-white/10 hover:bg-slate-800 dark:hover:bg-white/15 text-white rounded-xl transition-all font-black text-[9px] uppercase tracking-[0.2em] shadow-sm"
           >
-            <RefreshCw className="w-4 h-4" />
-            Segarkan Data
+            <RefreshCw className="w-3.5 h-3.5" />
+            Segarkan
           </button>
         </div>
       </aside>
 
       {/* Mobile Nav - Bottom fixed bar */}
-      <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-[#1E293B] border-t border-slate-200 dark:border-[#334155] flex justify-around p-2 transition-colors">
+      <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-[#111827] border-t border-slate-200 dark:border-white/5 flex justify-around py-1.5 px-2 transition-colors">
         {menuItems.map((item) => (
           <button
             key={item.id}
             onClick={() => setActivePage(item.id)}
             className={cn(
-              "flex flex-col items-center gap-1 p-2 rounded-lg transition-colors",
-              activePage === item.id ? "text-blue-600 dark:text-blue-400" : "text-slate-400"
+              "flex flex-col items-center gap-1 p-2 rounded-xl transition-all",
+              activePage === item.id ? "text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-500/10" : "text-slate-400"
             )}
           >
             <item.icon className="w-5 h-5 font-bold" />
-            <span className="text-[9px] font-black uppercase tracking-widest">{item.label.split(' ')[1]}</span>
+            <span className="text-[8px] font-black uppercase tracking-[0.2em]">{item.label.split(' ')[1]}</span>
           </button>
         ))}
       </nav>
 
       {/* Main Content */}
-      <main className="flex-1 pb-20 lg:pb-0 overflow-y-auto">
-        <header className="lg:hidden bg-white dark:bg-[#1E293B] p-4 flex justify-between items-center border-b border-slate-200 dark:border-[#334155] transition-colors">
-          <h1 className="text-lg font-black tracking-tighter text-slate-900 dark:text-white uppercase">🥤 Sumber Jaya</h1>
+      <main className="flex-1 pb-20 lg:pb-0 overflow-y-auto custom-scrollbar">
+        <header className="lg:hidden bg-white dark:bg-[#111827] p-4 flex justify-between items-center border-b border-slate-200 dark:border-white/5 sticky top-0 z-40 transition-colors">
+          <h1 className="text-lg font-black tracking-tighter text-slate-900 dark:text-white uppercase">🥤 SUMBER JAYA</h1>
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2">
               <div className={cn("w-2 h-2 rounded-full", isOnline ? "bg-emerald-500" : "bg-rose-500")} />
-              <span className="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest">
-                {isOnline ? "Online" : "Offline"}
+              <span className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest">
+                {isOnline ? "Terhubung" : "Terputus"}
               </span>
             </div>
           </div>
         </header>
-        <div className="p-4 md:p-8 max-w-7xl mx-auto">
+        <div className="p-4 md:p-6 lg:p-8 max-w-[1600px] mx-auto">
           {children}
         </div>
       </main>

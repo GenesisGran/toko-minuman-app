@@ -107,143 +107,143 @@ export const ProductSettings: React.FC<ProductSettingsProps> = ({ isDarkMode }) 
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <h2 className="text-3xl font-black tracking-tighter text-slate-900 dark:text-white uppercase">⚙️ Master Produk</h2>
-        <div className="flex bg-white dark:bg-[#1E293B] p-1 rounded-xl border border-slate-200 dark:border-[#334155] shadow-sm transition-colors">
+    <div className="space-y-4">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+        <h2 className="text-2xl font-black tracking-tighter text-slate-900 dark:text-white uppercase">⚙️ Master Produk</h2>
+        <div className="flex bg-white dark:bg-[#111827] p-1.5 rounded-xl border border-slate-200 dark:border-white/5 shadow-sm transition-colors">
           <button 
             onClick={() => setActiveTab('edit')}
-            className={cn("px-6 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all", activeTab === 'edit' ? "bg-blue-600 text-white shadow-lg shadow-blue-500/30" : "text-slate-400 hover:text-slate-600 dark:hover:text-slate-200")}
+            className={cn("px-5 py-2.5 rounded-lg text-[11px] font-black uppercase tracking-widest transition-all", activeTab === 'edit' ? "bg-blue-600 text-white shadow-md" : "text-slate-400")}
           >
-            Update Harga / Data
+            Update Data
           </button>
           <button 
             onClick={() => setActiveTab('new')}
-            className={cn("px-6 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2", activeTab === 'new' ? "bg-blue-600 text-white shadow-lg shadow-blue-500/30" : "text-slate-400 hover:text-slate-600 dark:hover:text-slate-200")}
+            className={cn("px-5 py-2.5 rounded-lg text-[11px] font-black uppercase tracking-widest transition-all flex items-center gap-2", activeTab === 'new' ? "bg-blue-600 text-white shadow-md" : "text-slate-400")}
           >
-            <PlusCircle className="w-4 h-4" /> Produk Baru
+            Tambah Baru
           </button>
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-3xl mx-auto">
         {activeTab === 'edit' ? (
-          <div className="bg-white dark:bg-[#1E293B] p-8 md:p-12 rounded-3xl border border-slate-200 dark:border-[#334155] shadow-2xl dark:shadow-none space-y-8 transition-colors">
-            <div className="space-y-3">
-              <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500">Pilih Produk untuk Diedit</label>
+          <div className="bg-white dark:bg-[#111827] p-5 rounded-2xl border border-slate-200 dark:border-white/5 shadow-sm space-y-5 transition-colors">
+            <div className="space-y-2">
+              <label className="text-[11px] font-black uppercase tracking-widest text-slate-400">Pilih Nama Minuman (Geser untuk mencari)</label>
               <select 
                 onChange={(e) => handleSelectEdit(e.target.value)}
                 value={selectedProd?.id || ''}
-                className="w-full h-16 bg-slate-50 dark:bg-[#0F172A] border border-slate-200 dark:border-[#334155] rounded-2xl px-6 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none font-black text-slate-900 dark:text-white transition-all uppercase tracking-tight"
+                className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-xl py-3.5 px-4 focus:ring-4 focus:ring-blue-500/10 text-sm font-bold outline-none transition-all"
               >
-                <option value="">-- Pilih Produk --</option>
+                <option value="" className="dark:bg-slate-900">-- Tekan di sini untuk memilih --</option>
                 {products.map(p => (
-                  <option key={p.id} value={p.id} className="dark:bg-[#0F172A]">{p.nama_produk}</option>
+                  <option key={p.id} value={p.id} className="dark:bg-slate-900">{p.nama_produk}</option>
                 ))}
               </select>
             </div>
 
             {selectedProd && (
-              <form onSubmit={handleUpdate} className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-in fade-in slide-in-from-bottom-4">
+              <form onSubmit={handleUpdate} className="grid grid-cols-2 gap-4 animate-in fade-in slide-in-from-bottom-2">
                 <div className="space-y-2 col-span-2">
-                  <label className="text-[10px] uppercase font-black tracking-widest text-slate-400 dark:text-slate-500">Nama Produk</label>
+                  <label className="text-[11px] uppercase font-black tracking-widest text-slate-400">Nama Minuman</label>
                   <input 
                     type="text" 
                     value={editForm.nama_produk}
                     onChange={(e) => setEditForm({...editForm, nama_produk: e.target.value})}
-                    className="w-full bg-slate-50 dark:bg-[#0F172A] border border-slate-100 dark:border-[#334155] rounded-xl h-14 px-6 font-bold text-slate-900 dark:text-white"
+                    className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/5 rounded-xl py-3.5 px-4 text-base font-bold"
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-[10px] uppercase font-black tracking-widest text-slate-400 dark:text-slate-500">Harga Rumah (Retail)</label>
+                  <label className="text-[11px] uppercase font-black tracking-widest text-slate-400">Harga Rumah (Retail)</label>
                   <input 
                     type="number" 
                     value={editForm.harga_jual_retail || ''}
                     onChange={(e) => setEditForm({...editForm, harga_jual_retail: e.target.value === '' ? 0 : parseFloat(e.target.value)})}
-                    className="w-full bg-slate-50 dark:bg-[#0F172A] border border-slate-100 dark:border-[#334155] rounded-xl h-14 px-6 font-bold text-slate-900 dark:text-white"
+                    className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/5 rounded-xl py-3.5 px-4 text-base font-bold tabular-nums"
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-[10px] uppercase font-black tracking-widest text-slate-400 dark:text-slate-500">Harga Jualan (Grosir)</label>
+                  <label className="text-[11px] uppercase font-black tracking-widest text-slate-400">Harga Jualan (Grosir)</label>
                   <input 
                     type="number" 
                     value={editForm.harga_jual_grosir || ''}
                     onChange={(e) => setEditForm({...editForm, harga_jual_grosir: e.target.value === '' ? 0 : parseFloat(e.target.value)})}
-                    className="w-full bg-slate-50 dark:bg-[#0F172A] border border-slate-100 dark:border-[#334155] rounded-xl h-14 px-6 font-bold text-slate-900 dark:text-white"
+                    className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/5 rounded-xl py-3.5 px-4 text-base font-bold tabular-nums"
                   />
                 </div>
                 <div className="space-y-2 col-span-2">
-                  <label className="text-[10px] uppercase font-black tracking-widest text-slate-400 dark:text-slate-500">Satuan</label>
+                  <label className="text-[11px] uppercase font-black tracking-widest text-slate-400">Satuan (Contoh: Dus / Renteng)</label>
                   <input 
                     type="text" 
                     value={editForm.satuan}
                     onChange={(e) => setEditForm({...editForm, satuan: e.target.value})}
-                    className="w-full bg-slate-50 dark:bg-[#0F172A] border border-slate-100 dark:border-[#334155] rounded-xl h-14 px-6 font-bold text-slate-900 dark:text-white uppercase tracking-widest"
+                    className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/5 rounded-xl py-3.5 px-4 text-base font-bold uppercase tracking-widest"
                   />
                 </div>
                 <button 
                   type="submit"
                   disabled={isSubmitting}
-                  className="col-span-2 h-16 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-black text-lg transition-all flex items-center justify-center gap-3 shadow-2xl shadow-blue-600/30 uppercase tracking-widest"
+                  className="col-span-2 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-black text-lg transition-all flex items-center justify-center gap-3 shadow-xl shadow-blue-500/30 uppercase tracking-widest"
                 >
-                  {isSubmitting ? <RefreshCw className="w-6 h-6 animate-spin" /> : <><Save className="w-6 h-6" /> SIMPAN PERUBAHAN</>}
+                  {isSubmitting ? <RefreshCw className="w-6 h-6 animate-spin" /> : "SIMPAN PERUBAHAN"}
                 </button>
               </form>
             )}
           </div>
         ) : (
-          <div className="bg-white dark:bg-[#1E293B] p-8 md:p-12 rounded-3xl border border-slate-200 dark:border-[#334155] shadow-2xl dark:shadow-none transition-colors">
-            <form onSubmit={handleCreate} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="bg-white dark:bg-[#111827] p-6 rounded-3xl border border-slate-200 dark:border-white/5 shadow-sm transition-colors">
+            <form onSubmit={handleCreate} className="grid grid-cols-2 gap-4">
               <div className="space-y-2 col-span-2">
-                <label className="text-[10px] uppercase font-black tracking-widest text-slate-400 dark:text-slate-500">Nama Produk Baru</label>
+                <label className="text-[11px] uppercase font-black tracking-widest text-slate-400">Nama Minuman Baru</label>
                 <input 
                   type="text" 
                   required
-                  placeholder="Ketik nama minuman..."
+                  placeholder="Contoh: Aqua Gelas"
                   value={newForm.nama_produk}
                   onChange={(e) => setNewForm({...newForm, nama_produk: e.target.value})}
-                  className="w-full bg-slate-50 dark:bg-[#0F172A] border border-slate-200 dark:border-[#334155] rounded-2xl h-14 px-6 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none font-bold text-slate-900 dark:text-white transition-all shadow-inner"
+                  className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-xl py-3.5 px-4 text-base font-bold"
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-[10px] uppercase font-black tracking-widest text-slate-400 dark:text-slate-500">Harga Rumah (Retail)</label>
+                <label className="text-[11px] uppercase font-black tracking-widest text-slate-400">Harga Rumah (Retail)</label>
                 <input 
                   type="number" 
                   required
                   value={newForm.harga_jual_retail || ''}
                   onChange={(e) => setNewForm({...newForm, harga_jual_retail: e.target.value === '' ? 0 : parseFloat(e.target.value)})}
-                  className="w-full bg-slate-50 dark:bg-[#0F172A] border border-slate-200 dark:border-[#334155] rounded-xl h-14 px-6 font-bold text-slate-900 dark:text-white shadow-inner transition-all"
+                  className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-xl py-3.5 px-4 text-base font-bold tabular-nums"
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-[10px] uppercase font-black tracking-widest text-slate-400 dark:text-slate-500">Harga Jualan (Grosir)</label>
+                <label className="text-[11px] uppercase font-black tracking-widest text-slate-400">Harga Jualan (Grosir)</label>
                 <input 
                   type="number" 
                   required
                   value={newForm.harga_jual_grosir || ''}
                   onChange={(e) => setNewForm({...newForm, harga_jual_grosir: e.target.value === '' ? 0 : parseFloat(e.target.value)})}
-                  className="w-full bg-slate-50 dark:bg-[#0F172A] border border-slate-200 dark:border-[#334155] rounded-xl h-14 px-6 font-bold text-slate-900 dark:text-white shadow-inner transition-all"
+                  className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-xl py-3.5 px-4 text-base font-bold tabular-nums"
                 />
               </div>
               <div className="space-y-2 col-span-2">
-                <label className="text-[10px] uppercase font-black tracking-widest text-slate-400 dark:text-slate-500">Satuan</label>
+                <label className="text-[11px] uppercase font-black tracking-widest text-slate-400">Satuan (Contoh: Dus)</label>
                 <input 
                   type="text" 
                   value={newForm.satuan}
                   onChange={(e) => setNewForm({...newForm, satuan: e.target.value})}
-                  className="w-full bg-slate-50 dark:bg-[#0F172A] border border-slate-200 dark:border-[#334155] rounded-xl h-14 px-6 font-bold text-slate-900 dark:text-white uppercase tracking-widest shadow-inner transition-all"
+                  className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-xl py-3.5 px-4 text-base font-bold uppercase tracking-widest"
                 />
               </div>
               
-              <div className="col-span-2 flex items-center gap-4 bg-blue-50 dark:bg-blue-500/10 p-5 rounded-2xl border border-blue-100 dark:border-blue-500/20 text-blue-600 dark:text-blue-400 transition-colors">
-                <AlertCircle className="w-6 h-6 flex-shrink-0" />
-                <p className="text-[10px] font-black uppercase tracking-widest leading-relaxed">Sistem akan mengecek apakah nama produk sudah tersedia untuk mencegah duplikasi data.</p>
+              <div className="col-span-2 flex items-start gap-3 bg-blue-50 dark:bg-blue-500/10 p-4 rounded-xl border border-blue-100 dark:border-blue-500/20 text-blue-600">
+                <AlertCircle className="w-5 h-5 mt-0.5 flex-shrink-0" />
+                <p className="text-[10px] font-black uppercase tracking-widest leading-relaxed">Sistem akan mengecek apakah nama produk sudah tersedia untuk mencegah duplikat.</p>
               </div>
 
               <button 
                 type="submit"
                 disabled={isSubmitting}
-                className="col-span-2 h-16 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl font-black text-lg transition-all flex items-center justify-center gap-3 shadow-2xl shadow-emerald-500/30 uppercase tracking-[0.2em]"
+                className="col-span-2 py-5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl font-black text-lg transition-all flex items-center justify-center gap-3 shadow-xl shadow-emerald-500/30 uppercase tracking-widest"
               >
                 {isSubmitting ? <RefreshCw className="w-6 h-6 animate-spin" /> : "TAMBAH PRODUK BARU"}
               </button>

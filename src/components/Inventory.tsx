@@ -110,27 +110,27 @@ export const Inventory: React.FC<InventoryProps> = ({ isDarkMode }) => {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <h2 className="text-3xl font-black tracking-tighter text-slate-900 dark:text-white uppercase">📦 Kelola Stok & Modal</h2>
-        <div className="flex bg-white dark:bg-[#1E293B] p-1 rounded-xl border border-slate-200 dark:border-[#334155] shadow-sm transition-colors">
+    <div className="space-y-4">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+        <h2 className="text-2xl font-black tracking-tighter text-slate-900 dark:text-white uppercase">📦 Stok & Modal</h2>
+        <div className="flex bg-white dark:bg-[#111827] p-1.5 rounded-xl border border-slate-200 dark:border-white/5 shadow-sm transition-colors">
           <button 
             onClick={() => setActiveTab('status')}
-            className={cn("px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2", activeTab === 'status' ? "bg-blue-600 text-white shadow-lg shadow-blue-500/30" : "text-slate-400 hover:text-slate-600 dark:hover:text-slate-200")}
+            className={cn("px-5 py-2.5 rounded-lg text-[11px] font-black uppercase tracking-widest transition-all", activeTab === 'status' ? "bg-blue-600 text-white shadow-md" : "text-slate-400")}
           >
-            Status
+            Lihat Stok
           </button>
           <button 
             onClick={() => setActiveTab('tambah')}
-            className={cn("px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2", activeTab === 'tambah' ? "bg-blue-600 text-white shadow-lg shadow-blue-500/30" : "text-slate-400 hover:text-slate-600 dark:hover:text-slate-200")}
+            className={cn("px-5 py-2.5 rounded-lg text-[11px] font-black uppercase tracking-widest transition-all", activeTab === 'tambah' ? "bg-blue-600 text-white shadow-md" : "text-slate-400")}
           >
-            <PackagePlus className="w-4 h-4" /> Tambah
+            Tambah Stok
           </button>
           <button 
             onClick={() => setActiveTab('riwayat')}
-            className={cn("px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2", activeTab === 'riwayat' ? "bg-blue-600 text-white shadow-lg shadow-blue-500/30" : "text-slate-400 hover:text-slate-600 dark:hover:text-slate-200")}
+            className={cn("px-5 py-2.5 rounded-lg text-[11px] font-black uppercase tracking-widest transition-all", activeTab === 'riwayat' ? "bg-blue-600 text-white shadow-md" : "text-slate-400")}
           >
-            <History className="w-4 h-4" /> Riwayat
+            Riwayat Stok
           </button>
         </div>
       </div>
@@ -141,33 +141,55 @@ export const Inventory: React.FC<InventoryProps> = ({ isDarkMode }) => {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="space-y-4"
+            className="space-y-3"
           >
-            <div className="relative group">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-blue-500 transition-colors" />
+            <div className="relative">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
               <input 
                 type="text" 
-                placeholder="Cari Stok Produk..." 
+                placeholder="Cari Nama Minuman..." 
                 value={search}
                 onChange={(e) => {setSearch(e.target.value); setProdPage(0);}}
-                className="w-full bg-white dark:bg-[#1E293B] border border-slate-200 dark:border-[#334155] rounded-2xl py-4 pl-12 pr-4 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 text-slate-900 dark:text-white font-bold transition-all shadow-sm"
+                className="w-full bg-white dark:bg-[#111827] border border-slate-200 dark:border-white/5 rounded-xl py-3.5 pl-12 pr-4 text-base font-bold shadow-sm"
               />
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {paginatedProducts.map(p => (
-                <div key={p.id} className={cn("bg-white dark:bg-[#1E293B] p-7 rounded-3xl border border-slate-200 dark:border-[#334155] space-y-4 shadow-sm hover:shadow-xl hover:scale-[1.02] transition-all", p.stok <= 20 ? "border-l-8 border-l-rose-500" : p.stok <= 100 ? "border-l-8 border-l-amber-500" : "border-l-8 border-l-emerald-500")}>
-                  <p className="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-[0.2em] leading-none mb-1">{p.nama_produk}</p>
-                  <div className="flex items-baseline gap-2">
-                    <p className="text-5xl font-black text-slate-900 dark:text-white tracking-tighter tabular-nums">{p.stok}</p>
-                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{p.satuan}</span>
-                  </div>
-                  <div className="flex justify-between items-center pt-4 border-t border-slate-100 dark:border-white/5">
-                    <span className="text-[10px] text-slate-400 font-black uppercase tracking-widest">Modal</span>
-                    <span className="text-blue-600 dark:text-blue-400 font-black text-sm">{formatCurrency(p.latest_modal || 0)}</span>
-                  </div>
-                </div>
-              ))}
+            <div className="bg-white dark:bg-[#111827] rounded-2xl border border-slate-200 dark:border-white/5 overflow-hidden shadow-sm">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse min-w-[600px]">
+                  <thead className="bg-slate-50/50 dark:bg-white/5 border-b border-slate-100 dark:border-white/5">
+                    <tr>
+                      <th className="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-slate-400 shrink-0">NAMA PRODUK</th>
+                      <th className="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-slate-400 text-center">JUMLAH STOK</th>
+                      <th className="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-slate-400">SATUAN</th>
+                      <th className="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-slate-400 text-right">HARGA MODAL</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-50 dark:divide-white/5">
+                    {paginatedProducts.map(p => (
+                      <tr key={p.id} className="hover:bg-slate-50/50 dark:hover:bg-white/5 transition-colors group">
+                        <td className="px-4 py-2.5">
+                          <p className="text-xs font-black uppercase tracking-tight text-slate-800 dark:text-white line-clamp-1">{p.nama_produk}</p>
+                        </td>
+                        <td className="px-4 py-2.5 text-center">
+                          <span className={cn(
+                            "px-3 py-1 rounded-full text-xs font-mono font-black tabular-nums shadow-sm",
+                            p.stok <= 20 ? "bg-rose-500 text-white" : p.stok <= 100 ? "bg-amber-100 text-amber-700" : "bg-emerald-100 text-emerald-700"
+                          )}>
+                            {p.stok}
+                          </span>
+                        </td>
+                        <td className="px-4 py-2.5">
+                          <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">{p.satuan}</span>
+                        </td>
+                        <td className="px-4 py-2.5 text-right">
+                          <span className="text-blue-600 dark:text-blue-400 font-bold text-xs tabular-nums">{formatCurrency(p.latest_modal || 0)}</span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
 
             {/* Pagination Controls */}
@@ -202,10 +224,10 @@ export const Inventory: React.FC<InventoryProps> = ({ isDarkMode }) => {
             exit={{ opacity: 0, scale: 0.98 }}
             className="max-w-2xl mx-auto"
           >
-            <div className="bg-white dark:bg-[#1E293B] p-8 rounded-3xl border border-slate-200 dark:border-[#334155] shadow-2xl dark:shadow-none space-y-6 transition-colors">
-              <form onSubmit={handleSubmitStock} className="space-y-6">
+            <div className="bg-white dark:bg-[#111827] p-5 rounded-2xl border border-slate-200 dark:border-white/5 shadow-sm space-y-4 transition-colors">
+              <form onSubmit={handleSubmitStock} className="space-y-4">
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500">Pilih Produk</label>
+                  <label className="text-[11px] font-black uppercase tracking-widest text-slate-400">Pilih Nama Minuman</label>
                   <select 
                     required
                     onChange={(e) => {
@@ -213,57 +235,57 @@ export const Inventory: React.FC<InventoryProps> = ({ isDarkMode }) => {
                       setSelectedProd(p || null);
                       if (p) setModalPrice(p.latest_modal || 0);
                     }}
-                    className="w-full bg-slate-50 dark:bg-[#0F172A] border border-slate-200 dark:border-[#334155] rounded-xl py-4 px-4 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 text-slate-900 dark:text-white outline-none font-bold transition-all"
+                    className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-xl py-3.5 px-4 focus:ring-4 focus:ring-blue-500/10 text-sm font-bold outline-none transition-all"
                   >
-                    <option value="">Pilih Produk...</option>
+                    <option value="" className="dark:bg-slate-900">-- Tekan di sini untuk memilih produk --</option>
                     {products.map(p => (
-                      <option key={p.id} value={p.id} className="dark:bg-[#0F172A]">{p.nama_produk} (Stok: {p.stok})</option>
+                      <option key={p.id} value={p.id} className="dark:bg-slate-900">{p.nama_produk} (Stok: {p.stok})</option>
                     ))}
                   </select>
                 </div>
-
+                
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500">Jumlah Masuk</label>
+                    <label className="text-[11px] font-black uppercase tracking-widest text-slate-400">Jumlah Masuk</label>
                     <input 
                       type="number" 
                       min="1"
                       required
                       value={qtyIn || ''}
                       onChange={(e) => setQtyIn(e.target.value === '' ? 0 : parseInt(e.target.value))}
-                      className="w-full bg-slate-50 dark:bg-[#0F172A] border border-slate-200 dark:border-[#334155] rounded-xl py-4 px-4 outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 text-slate-900 dark:text-white font-bold transition-all"
+                      className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-xl py-3.5 px-4 outline-none text-base font-bold tabular-nums"
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500">Modal Satuan</label>
+                    <label className="text-[11px] font-black uppercase tracking-widest text-slate-400">Harga Modal Satuan</label>
                     <input 
                       type="number" 
                       min="1"
                       required
                       value={modalPrice || ''}
                       onChange={(e) => setModalPrice(e.target.value === '' ? 0 : parseFloat(e.target.value))}
-                      className="w-full bg-slate-50 dark:bg-[#0F172A] border border-slate-200 dark:border-[#334155] rounded-xl py-4 px-4 outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 text-slate-900 dark:text-white font-bold transition-all"
+                      className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-xl py-3.5 px-4 outline-none text-base font-bold tabular-nums"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500">Keterangan</label>
+                  <label className="text-[11px] font-black uppercase tracking-widest text-slate-400">Keterangan (Contoh: Nama Sales)</label>
                   <input 
                     type="text" 
-                    placeholder="Contoh: Supplier A / Distributor Bekasi"
+                    placeholder="Tulis keterangan di sini..."
                     value={keterangan}
                     onChange={(e) => setKeterangan(e.target.value)}
-                    className="w-full bg-slate-50 dark:bg-[#0F172A] border border-slate-200 dark:border-[#334155] rounded-xl py-4 px-4 outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 text-slate-900 dark:text-white font-bold transition-all"
+                    className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-xl py-3.5 px-4 outline-none text-sm font-bold"
                   />
                 </div>
 
                 <button 
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full h-16 bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-200 dark:disabled:bg-slate-800 text-white rounded-2xl font-black text-lg transition-all flex items-center justify-center gap-3 shadow-xl shadow-emerald-600/30 uppercase tracking-widest"
+                  className="w-full py-5 bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-200 text-white rounded-2xl font-black text-lg transition-all flex items-center justify-center gap-3 shadow-xl shadow-emerald-500/30 uppercase tracking-widest"
                 >
-                  {isSubmitting ? <RefreshCw className="w-6 h-6 animate-spin" /> : "SIMPAN & UPDATE MODAL"}
+                  {isSubmitting ? <RefreshCw className="w-6 h-6 animate-spin" /> : "SIMPAN UPDATE STOK"}
                 </button>
               </form>
             </div>
@@ -276,33 +298,35 @@ export const Inventory: React.FC<InventoryProps> = ({ isDarkMode }) => {
             animate={{ opacity: 1 }}
             className="space-y-4"
           >
-            <div className="bg-white dark:bg-[#1E293B] rounded-3xl border border-slate-200 dark:border-[#334155] overflow-hidden shadow-sm transition-colors">
-              <table className="w-full text-left border-collapse">
-                <thead className="bg-slate-50 dark:bg-[#0F172A] border-b border-slate-200 dark:border-[#334155] transition-colors">
+            <div className="bg-white dark:bg-[#111827] rounded-xl border border-slate-200 dark:border-white/5 overflow-hidden shadow-sm">
+              <table className="w-full text-left border-collapse min-w-[500px]">
+                  <thead className="bg-slate-50/50 dark:bg-white/5 border-b border-slate-100 dark:border-white/5">
                   <tr>
-                    <th className="px-6 py-5 text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500">Waktu</th>
-                    <th className="px-6 py-5 text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500">Produk</th>
-                    <th className="px-6 py-5 text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 text-right">Jumlah</th>
-                    <th className="px-6 py-5 text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 text-right">Modal</th>
+                    <th className="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-slate-400">TANGGAL & WAKTU</th>
+                    <th className="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-slate-400">NAMA PRODUK</th>
+                    <th className="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-slate-400 text-right">JUMLAH</th>
+                    <th className="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-slate-400 text-right">HARGA MODAL</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 dark:divide-white/5 transition-colors">
+                <tbody className="divide-y divide-slate-50 dark:divide-white/5">
                   {paginatedHistory.map(h => (
-                    <tr key={h.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                      <td className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-tight">{h.tanggal_masuk.slice(0, 16).replace('T', ' ')}</td>
-                      <td className="px-6 py-4 font-bold text-slate-900 dark:text-white">{h.produk?.nama_produk}</td>
-                      <td className={cn("px-6 py-4 text-right font-black", h.jumlah_masuk < 0 ? "text-rose-500" : "text-emerald-500")}>
+                    <tr key={h.id} className="hover:bg-slate-50/50 dark:hover:bg-white/5 transition-colors">
+                      <td className="px-4 py-2.5 text-[9px] font-black text-slate-400 uppercase tabular-nums">
+                        {h.tanggal_masuk.slice(2, 10).replace(/-/g, '/')} {h.tanggal_masuk.slice(11, 16)}
+                      </td>
+                      <td className="px-4 py-2.5 text-xs font-bold text-slate-800 dark:text-white">{h.produk?.nama_produk}</td>
+                      <td className={cn("px-4 py-2.5 text-right text-xs font-black tabular-nums", h.jumlah_masuk < 0 ? "text-rose-500" : "text-emerald-500")}>
                         {h.jumlah_masuk > 0 ? `+${h.jumlah_masuk}` : h.jumlah_masuk}
                       </td>
-                      <td className="px-6 py-4 text-right font-bold text-slate-600 dark:text-slate-400">{formatCurrency(h.harga_modal_satuan)}</td>
+                      <td className="px-4 py-2.5 text-right text-xs font-bold text-slate-500 tabular-nums">{formatCurrency(h.harga_modal_satuan)}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
               
               {paginatedHistory.length === 0 && (
-                <div className="p-20 text-center text-slate-300 dark:text-slate-700 font-black uppercase tracking-widest text-xs">
-                  Belum ada riwayat stok
+                <div className="p-10 text-center text-slate-300 dark:text-slate-800 font-black uppercase tracking-widest text-[9px]">
+                  Kosong
                 </div>
               )}
             </div>
