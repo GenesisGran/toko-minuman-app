@@ -56,9 +56,87 @@ export const SalesHistory: React.FC = () => {
   };
 
   const handlePrint = (sale: Sale) => {
-    // In a real app, this would trigger a print dialog with a specific layout.
-    // Here we'll just show a success message.
-    alert(`Mempersiapkan struk Nota #${sale.id}...`);
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) return;
+
+    const itemsHtml = sale.item_penjualan?.map(item => `
+      <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+        <div style="flex: 1;">
+          <div style="font-weight: bold;">${item.produk?.nama_produk}</div>
+          <div style="font-size: 10px;">${item.jumlah} x ${formatCurrency(item.harga_jual_satuan)}</div>
+        </div>
+        <div style="font-weight: bold;">${formatCurrency(item.subtotal_harga)}</div>
+      </div>
+    `).join('') || '';
+
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>Nota #${sale.id}</title>
+          <style>
+            @page { size: 80mm auto; margin: 0; }
+            body { 
+              font-family: 'Courier New', Courier, monospace; 
+              padding: 10px; 
+              width: 80mm; 
+              color: #000;
+              font-size: 12px;
+              line-height: 1.2;
+            }
+            .header { text-align: center; margin-bottom: 20px; border-bottom: 1px dashed #000; padding-bottom: 10px; }
+            .footer { text-align: center; margin-top: 20px; border-top: 1px dashed #000; padding-top: 10px; font-size: 10px; }
+            .section { margin-bottom: 10px; }
+            .flex { display: flex; justify-content: space-between; }
+            .bold { font-weight: bold; }
+            .divider { border-bottom: 1px dashed #000; margin: 10px 0; }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <h2 style="margin: 0;">TOKO MINUMAN</h2>
+            <div style="font-size: 10px;">Modern Beverage POS System</div>
+          </div>
+          
+          <div class="section">
+            <div class="flex"><span>Nota:</span> <span>#${sale.id}</span></div>
+            <div class="flex"><span>Tanggal:</span> <span>${sale.waktu_transaksi.slice(0, 16).replace('T', ' ')}</span></div>
+            <div class="flex"><span>Pelanggan:</span> <span>${sale.catatan || 'Umum'}</span></div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="section">
+            ${itemsHtml}
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="section">
+            <div class="flex bold">
+              <span>TOTAL</span>
+              <span>${formatCurrency(sale.total_harga)}</span>
+            </div>
+            <div class="flex">
+              <span>Status</span>
+              <span>${sale.status_pembayaran}</span>
+            </div>
+          </div>
+
+          <div class="footer">
+            <div>Terima Kasih Atas Kunjungan Anda</div>
+            <div>Barang yang sudah dibeli tidak dapat ditukar</div>
+          </div>
+
+          <script>
+            window.onload = function() {
+              window.print();
+              setTimeout(function() { window.close(); }, 500);
+            };
+          </script>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
   };
 
   return (

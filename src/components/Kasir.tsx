@@ -53,6 +53,17 @@ export const Kasir: React.FC = () => {
   }, [search, products]);
 
   const addToCart = (p: Product) => {
+    if (p.stok <= 0) {
+      alert("Stok habis!");
+      return;
+    }
+
+    const currentInCart = cart[String(p.id)]?.jumlah || 0;
+    if (currentInCart >= p.stok) {
+      alert("Jumlah di keranjang sudah mencapai batas stok!");
+      return;
+    }
+
     const hJual = priceMode === 'Jualan' ? (p.harga_jual_grosir || p.harga_jual_retail) : p.harga_jual_retail;
     const pid = String(p.id);
     
@@ -80,17 +91,28 @@ export const Kasir: React.FC = () => {
   };
 
   const updateQty = (pid: string, delta: number) => {
+    const item = cart[pid];
+    if (!item) return;
+
+    if (delta > 0) {
+      const product = products.find(p => String(p.id) === pid);
+      if (product && item.jumlah >= product.stok) {
+        alert("Stok tidak mencukupi!");
+        return;
+      }
+    }
+
     setCart(prev => {
-      const item = prev[pid];
-      if (!item) return prev;
-      const newQty = item.jumlah + delta;
+      const currentItem = prev[pid];
+      if (!currentItem) return prev;
+      const newQty = currentItem.jumlah + delta;
       if (newQty <= 0) {
         const { [pid]: _, ...rest } = prev;
         return rest;
       }
       return {
         ...prev,
-        [pid]: { ...item, jumlah: newQty }
+        [pid]: { ...currentItem, jumlah: newQty }
       };
     });
   };
@@ -115,6 +137,22 @@ export const Kasir: React.FC = () => {
     setIsSaving(true);
     
     try {
+      // 0. Double check stock levels globally before saving
+      const productIds = Object.keys(cart);
+      const latestStockRes = await callDb(`produk?id=in.(${productIds.join(',')})`);
+      
+      if (latestStockRes) {
+        for (const item of Object.values(cart) as CartItem[]) {
+          const dbProd = latestStockRes.find((p: any) => p.id === item.produk_id);
+          if (!dbProd || dbProd.stok < item.jumlah) {
+            alert(`Gagal: Stok ${item.nama} tidak mencukupi (Tersisa: ${dbProd?.stok || 0})`);
+            setIsSaving(false);
+            fetchProducts(); // Refresh stock
+            return;
+          }
+        }
+      }
+
       const saleData = {
         total_harga: totals.harga,
         total_modal: totals.modal,
@@ -151,13 +189,11 @@ export const Kasir: React.FC = () => {
             tanggal_masuk: getNowWIB()
           });
 
-          // 3. Update Product Stock
-          const currentProd = products.find(p => p.id === item.produk_id);
-          if (currentProd) {
-            await callDb(`produk?id=eq.${item.produk_id}`, "PATCH", {
-              stok: currentProd.stok - item.jumlah
-            });
-          }
+          // 3. Update Product Stock (Atomic decrement is better, but here we do it based on fetched latest values)
+          const dbProd = latestStockRes.find((p: any) => p.id === item.produk_id);
+          await callDb(`produk?id=eq.${item.produk_id}`, "PATCH", {
+            stok: dbProd.stok - item.jumlah
+          });
         }
 
         await logAction("Simpan Penjualan", "Sukses", `Nota #${saleId} berhasil disimpan`, saleData);
