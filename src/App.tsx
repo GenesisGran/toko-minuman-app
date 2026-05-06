@@ -16,6 +16,12 @@ export default function App() {
   const [activePage, setActivePage] = useState('kasir');
   const [isOnline, setIsOnline] = useState(true);
 
+  useEffect(() => {
+    // Force dark mode on root
+    document.documentElement.classList.add('dark');
+    document.documentElement.style.setProperty('color-scheme', 'dark');
+  }, []);
+
   const checkConnection = async () => {
     // Check if we can reach the API
     const res = await callDb("produk?select=id&limit=1");
@@ -36,12 +42,12 @@ export default function App() {
 
   const renderPage = () => {
     switch (activePage) {
-      case 'kasir': return <Kasir />;
-      case 'stok': return <Inventory />;
-      case 'produk': return <ProductSettings />;
-      case 'riwayat': return <SalesHistory />;
-      case 'laporan': return <Reports />;
-      default: return <Kasir />;
+      case 'kasir': return <Kasir isDarkMode={true} />;
+      case 'stok': return <Inventory isDarkMode={true} />;
+      case 'produk': return <ProductSettings isDarkMode={true} />;
+      case 'riwayat': return <SalesHistory isDarkMode={true} />;
+      case 'laporan': return <Reports isDarkMode={true} />;
+      default: return <Kasir isDarkMode={true} />;
     }
   };
 

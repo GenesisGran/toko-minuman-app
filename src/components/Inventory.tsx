@@ -10,7 +10,11 @@ import { callDb, getNowWIB, logAction } from '../lib/api';
 import { cn, formatCurrency } from '../lib/utils';
 import { motion, AnimatePresence } from 'motion/react';
 
-export const Inventory: React.FC = () => {
+interface InventoryProps {
+  isDarkMode: boolean;
+}
+
+export const Inventory: React.FC<InventoryProps> = ({ isDarkMode }) => {
   const [products, setProducts] = useState<Product[]>([]);
   const [stockHistory, setStockHistory] = useState<StockIn[]>([]);
   const [loading, setLoading] = useState(true);
@@ -108,23 +112,23 @@ export const Inventory: React.FC = () => {
   return (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <h2 className="text-3xl font-bold tracking-tight">📦 Kelola Stok & Modal</h2>
-        <div className="flex bg-[#1E293B] p-1 rounded-xl border border-[#334155]">
+        <h2 className="text-3xl font-black tracking-tighter text-slate-900 dark:text-white uppercase">📦 Kelola Stok & Modal</h2>
+        <div className="flex bg-white dark:bg-[#1E293B] p-1 rounded-xl border border-slate-200 dark:border-[#334155] shadow-sm transition-colors">
           <button 
             onClick={() => setActiveTab('status')}
-            className={cn("px-4 py-2 rounded-lg text-sm font-bold transition-all flex items-center gap-2", activeTab === 'status' ? "bg-blue-600 text-white" : "text-slate-400")}
+            className={cn("px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2", activeTab === 'status' ? "bg-blue-600 text-white shadow-lg shadow-blue-500/30" : "text-slate-400 hover:text-slate-600 dark:hover:text-slate-200")}
           >
             Status
           </button>
           <button 
             onClick={() => setActiveTab('tambah')}
-            className={cn("px-4 py-2 rounded-lg text-sm font-bold transition-all flex items-center gap-2", activeTab === 'tambah' ? "bg-blue-600 text-white" : "text-slate-400")}
+            className={cn("px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2", activeTab === 'tambah' ? "bg-blue-600 text-white shadow-lg shadow-blue-500/30" : "text-slate-400 hover:text-slate-600 dark:hover:text-slate-200")}
           >
             <PackagePlus className="w-4 h-4" /> Tambah
           </button>
           <button 
             onClick={() => setActiveTab('riwayat')}
-            className={cn("px-4 py-2 rounded-lg text-sm font-bold transition-all flex items-center gap-2", activeTab === 'riwayat' ? "bg-blue-600 text-white" : "text-slate-400")}
+            className={cn("px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2", activeTab === 'riwayat' ? "bg-blue-600 text-white shadow-lg shadow-blue-500/30" : "text-slate-400 hover:text-slate-600 dark:hover:text-slate-200")}
           >
             <History className="w-4 h-4" /> Riwayat
           </button>
@@ -139,25 +143,28 @@ export const Inventory: React.FC = () => {
             exit={{ opacity: 0, y: -10 }}
             className="space-y-4"
           >
-            <div className="relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
+            <div className="relative group">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-blue-500 transition-colors" />
               <input 
                 type="text" 
                 placeholder="Cari Stok Produk..." 
                 value={search}
                 onChange={(e) => {setSearch(e.target.value); setProdPage(0);}}
-                className="w-full bg-[#1E293B] border border-[#334155] rounded-xl py-4 pl-12 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
+                className="w-full bg-white dark:bg-[#1E293B] border border-slate-200 dark:border-[#334155] rounded-2xl py-4 pl-12 pr-4 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 text-slate-900 dark:text-white font-bold transition-all shadow-sm"
               />
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {paginatedProducts.map(p => (
-                <div key={p.id} className={cn("bg-[#1E293B] p-5 rounded-xl border border-[#334155] space-y-2", getStockClass(p.stok))}>
-                  <p className="text-xs text-slate-500 font-black uppercase tracking-widest">{p.nama_produk}</p>
-                  <p className="text-3xl font-black">{p.stok}</p>
-                  <div className="flex justify-between items-center text-[10px] text-slate-400 font-bold">
-                    <span>{p.satuan.toUpperCase()}</span>
-                    <span>MODAL: {formatCurrency(p.latest_modal || 0)}</span>
+                <div key={p.id} className={cn("bg-white dark:bg-[#1E293B] p-7 rounded-3xl border border-slate-200 dark:border-[#334155] space-y-4 shadow-sm hover:shadow-xl hover:scale-[1.02] transition-all", p.stok <= 20 ? "border-l-8 border-l-rose-500" : p.stok <= 100 ? "border-l-8 border-l-amber-500" : "border-l-8 border-l-emerald-500")}>
+                  <p className="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-[0.2em] leading-none mb-1">{p.nama_produk}</p>
+                  <div className="flex items-baseline gap-2">
+                    <p className="text-5xl font-black text-slate-900 dark:text-white tracking-tighter tabular-nums">{p.stok}</p>
+                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{p.satuan}</span>
+                  </div>
+                  <div className="flex justify-between items-center pt-4 border-t border-slate-100 dark:border-white/5">
+                    <span className="text-[10px] text-slate-400 font-black uppercase tracking-widest">Modal</span>
+                    <span className="text-blue-600 dark:text-blue-400 font-black text-sm">{formatCurrency(p.latest_modal || 0)}</span>
                   </div>
                 </div>
               ))}
@@ -165,20 +172,20 @@ export const Inventory: React.FC = () => {
 
             {/* Pagination Controls */}
             {totalProdPages > 1 && (
-              <div className="flex items-center justify-between bg-[#1E293B] p-4 rounded-xl border border-[#334155]">
-                <p className="text-xs text-slate-400 font-bold uppercase tracking-tight">Halaman {prodPage + 1} dari {totalProdPages}</p>
+              <div className="flex items-center justify-between bg-white dark:bg-[#1E293B] p-4 rounded-xl border border-slate-200 dark:border-[#334155] transition-colors">
+                <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest">Halaman {prodPage + 1} / {totalProdPages}</p>
                 <div className="flex gap-2">
                   <button 
                     disabled={prodPage === 0}
                     onClick={() => setProdPage(p => p - 1)}
-                    className="p-2 rounded-lg bg-[#334155] disabled:opacity-30 hover:bg-slate-600 transition-colors"
+                    className="p-2 rounded-xl bg-slate-50 dark:bg-[#334155] border border-slate-200 dark:border-transparent disabled:opacity-30 hover:bg-slate-100 dark:hover:bg-slate-600 transition-colors text-slate-600 dark:text-white"
                   >
                     <ChevronLeft className="w-5 h-5" />
                   </button>
                   <button 
                     disabled={prodPage >= totalProdPages - 1}
                     onClick={() => setProdPage(p => p + 1)}
-                    className="p-2 rounded-lg bg-[#334155] disabled:opacity-30 hover:bg-slate-600 transition-colors"
+                    className="p-2 rounded-xl bg-slate-50 dark:bg-[#334155] border border-slate-200 dark:border-transparent disabled:opacity-30 hover:bg-slate-100 dark:hover:bg-slate-600 transition-colors text-slate-600 dark:text-white"
                   >
                     <ChevronRight className="w-5 h-5" />
                   </button>
@@ -195,10 +202,10 @@ export const Inventory: React.FC = () => {
             exit={{ opacity: 0, scale: 0.98 }}
             className="max-w-2xl mx-auto"
           >
-            <div className="bg-[#1E293B] p-8 rounded-2xl border border-[#334155] shadow-2xl">
+            <div className="bg-white dark:bg-[#1E293B] p-8 rounded-3xl border border-slate-200 dark:border-[#334155] shadow-2xl dark:shadow-none space-y-6 transition-colors">
               <form onSubmit={handleSubmitStock} className="space-y-6">
                 <div className="space-y-2">
-                  <label className="text-xs font-black uppercase tracking-widest text-slate-500">Pilih Produk</label>
+                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500">Pilih Produk</label>
                   <select 
                     required
                     onChange={(e) => {
@@ -206,57 +213,57 @@ export const Inventory: React.FC = () => {
                       setSelectedProd(p || null);
                       if (p) setModalPrice(p.latest_modal || 0);
                     }}
-                    className="w-full bg-[#0F172A] border border-[#334155] rounded-xl py-3 px-4 focus:ring-2 focus:ring-blue-500 text-white outline-none"
+                    className="w-full bg-slate-50 dark:bg-[#0F172A] border border-slate-200 dark:border-[#334155] rounded-xl py-4 px-4 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 text-slate-900 dark:text-white outline-none font-bold transition-all"
                   >
                     <option value="">Pilih Produk...</option>
                     {products.map(p => (
-                      <option key={p.id} value={p.id}>{p.nama_produk} (Stok: {p.stok})</option>
+                      <option key={p.id} value={p.id} className="dark:bg-[#0F172A]">{p.nama_produk} (Stok: {p.stok})</option>
                     ))}
                   </select>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <label className="text-xs font-black uppercase tracking-widest text-slate-500">Jumlah Masuk</label>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500">Jumlah Masuk</label>
                     <input 
                       type="number" 
                       min="1"
                       required
                       value={qtyIn || ''}
                       onChange={(e) => setQtyIn(e.target.value === '' ? 0 : parseInt(e.target.value))}
-                      className="w-full bg-[#0F172A] border border-[#334155] rounded-xl py-3 px-4 outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full bg-slate-50 dark:bg-[#0F172A] border border-slate-200 dark:border-[#334155] rounded-xl py-4 px-4 outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 text-slate-900 dark:text-white font-bold transition-all"
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-black uppercase tracking-widest text-slate-500">Harga Modal Satuan</label>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500">Modal Satuan</label>
                     <input 
                       type="number" 
                       min="1"
                       required
                       value={modalPrice || ''}
                       onChange={(e) => setModalPrice(e.target.value === '' ? 0 : parseFloat(e.target.value))}
-                      className="w-full bg-[#0F172A] border border-[#334155] rounded-xl py-3 px-4 outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full bg-slate-50 dark:bg-[#0F172A] border border-slate-200 dark:border-[#334155] rounded-xl py-4 px-4 outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 text-slate-900 dark:text-white font-bold transition-all"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-xs font-black uppercase tracking-widest text-slate-500">Keterangan</label>
+                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500">Keterangan</label>
                   <input 
                     type="text" 
                     placeholder="Contoh: Supplier A / Distributor Bekasi"
                     value={keterangan}
                     onChange={(e) => setKeterangan(e.target.value)}
-                    className="w-full bg-[#0F172A] border border-[#334155] rounded-xl py-3 px-4 outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full bg-slate-50 dark:bg-[#0F172A] border border-slate-200 dark:border-[#334155] rounded-xl py-4 px-4 outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 text-slate-900 dark:text-white font-bold transition-all"
                   />
                 </div>
 
                 <button 
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full h-14 bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-700 text-white rounded-xl font-black text-lg transition-all flex items-center justify-center gap-3 shadow-xl shadow-emerald-600/20"
+                  className="w-full h-16 bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-200 dark:disabled:bg-slate-800 text-white rounded-2xl font-black text-lg transition-all flex items-center justify-center gap-3 shadow-xl shadow-emerald-600/30 uppercase tracking-widest"
                 >
-                  {isSubmitting ? <RefreshCw className="w-6 h-6 animate-spin" /> : "SIMPAN STOK & UPDATE MODAL"}
+                  {isSubmitting ? <RefreshCw className="w-6 h-6 animate-spin" /> : "SIMPAN & UPDATE MODAL"}
                 </button>
               </form>
             </div>
@@ -269,32 +276,32 @@ export const Inventory: React.FC = () => {
             animate={{ opacity: 1 }}
             className="space-y-4"
           >
-            <div className="bg-[#1E293B] rounded-2xl border border-[#334155] overflow-hidden">
-              <table className="w-full text-left">
-                <thead className="bg-[#0F172A] border-b border-[#334155]">
+            <div className="bg-white dark:bg-[#1E293B] rounded-3xl border border-slate-200 dark:border-[#334155] overflow-hidden shadow-sm transition-colors">
+              <table className="w-full text-left border-collapse">
+                <thead className="bg-slate-50 dark:bg-[#0F172A] border-b border-slate-200 dark:border-[#334155] transition-colors">
                   <tr>
-                    <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-slate-500">Tanggal</th>
-                    <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-slate-500">Produk</th>
-                    <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-slate-500 text-right">Jumlah</th>
-                    <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-slate-500 text-right">Modal/pcs</th>
+                    <th className="px-6 py-5 text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500">Waktu</th>
+                    <th className="px-6 py-5 text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500">Produk</th>
+                    <th className="px-6 py-5 text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 text-right">Jumlah</th>
+                    <th className="px-6 py-5 text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 text-right">Modal</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#334155]">
+                <tbody className="divide-y divide-slate-100 dark:divide-white/5 transition-colors">
                   {paginatedHistory.map(h => (
-                    <tr key={h.id} className="hover:bg-slate-800/50 transition-colors">
-                      <td className="px-6 py-4 text-xs font-mono text-slate-400">{h.tanggal_masuk.slice(0, 16).replace('T', ' ')}</td>
-                      <td className="px-6 py-4 font-bold">{h.produk?.nama_produk}</td>
+                    <tr key={h.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                      <td className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-tight">{h.tanggal_masuk.slice(0, 16).replace('T', ' ')}</td>
+                      <td className="px-6 py-4 font-bold text-slate-900 dark:text-white">{h.produk?.nama_produk}</td>
                       <td className={cn("px-6 py-4 text-right font-black", h.jumlah_masuk < 0 ? "text-rose-500" : "text-emerald-500")}>
                         {h.jumlah_masuk > 0 ? `+${h.jumlah_masuk}` : h.jumlah_masuk}
                       </td>
-                      <td className="px-6 py-4 text-right">{formatCurrency(h.harga_modal_satuan)}</td>
+                      <td className="px-6 py-4 text-right font-bold text-slate-600 dark:text-slate-400">{formatCurrency(h.harga_modal_satuan)}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
               
               {paginatedHistory.length === 0 && (
-                <div className="p-12 text-center text-slate-500 font-bold uppercase tracking-widest text-xs">
+                <div className="p-20 text-center text-slate-300 dark:text-slate-700 font-black uppercase tracking-widest text-xs">
                   Belum ada riwayat stok
                 </div>
               )}
@@ -302,20 +309,20 @@ export const Inventory: React.FC = () => {
 
             {/* Pagination Controls */}
             {totalHistPages > 1 && (
-              <div className="flex items-center justify-between bg-[#1E293B] p-4 rounded-xl border border-[#334155]">
-                <p className="text-xs text-slate-400 font-bold uppercase tracking-tight">Halaman {histPage + 1} dari {totalHistPages}</p>
+              <div className="flex items-center justify-between bg-white dark:bg-[#1E293B] p-4 rounded-xl border border-slate-200 dark:border-[#334155] transition-colors">
+                <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest">Halaman {histPage + 1} / {totalHistPages}</p>
                 <div className="flex gap-2">
                   <button 
                     disabled={histPage === 0}
                     onClick={() => setHistPage(p => p - 1)}
-                    className="p-2 rounded-lg bg-[#334155] disabled:opacity-30 hover:bg-slate-600 transition-colors"
+                    className="p-2 rounded-xl bg-slate-50 dark:bg-[#334155] border border-slate-200 dark:border-transparent disabled:opacity-30 hover:bg-slate-100 dark:hover:bg-slate-600 transition-colors text-slate-600 dark:text-white"
                   >
                     <ChevronLeft className="w-5 h-5" />
                   </button>
                   <button 
                     disabled={histPage >= totalHistPages - 1}
                     onClick={() => setHistPage(p => p + 1)}
-                    className="p-2 rounded-lg bg-[#334155] disabled:opacity-30 hover:bg-slate-600 transition-colors"
+                    className="p-2 rounded-xl bg-slate-50 dark:bg-[#334155] border border-slate-200 dark:border-transparent disabled:opacity-30 hover:bg-slate-100 dark:hover:bg-slate-600 transition-colors text-slate-600 dark:text-white"
                   >
                     <ChevronRight className="w-5 h-5" />
                   </button>
