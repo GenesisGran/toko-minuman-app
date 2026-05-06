@@ -1,20 +1,58 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# POS Toko Minuman - Sistem Kasir Modern
 
-# Run and deploy your AI Studio app
+Sistem Point of Sale (POS) berbasis web yang dirancang khusus untuk toko minuman. Aplikasi ini memudahkan pengelolaan transaksi harian, pemantauan stok barang, dan laporan keuntungan secara real-time.
 
-This contains everything you need to run your app locally.
+## 🚀 Fitur Utama
 
-View your app in AI Studio: https://ai.studio/apps/b8dff680-ac3e-40b3-a027-c97d8eba6fa9
+- **Kasir (Point of Sale):**
+  - Pencarian produk cepat.
+  - Dua mode harga (Grosir/Retail).
+  - Validasi stok real-time (mencegah stok minus).
+  - Cetak struk belanja otomatis.
+- **Manajemen Inventaris:**
+  - Update stok masuk secara detail.
+  - Riwayat stok masuk.
+  - Pengurangan stok otomatis setiap transaksi.
+- **Laporan & Analytics:**
+  - Grafik pendapatan harian.
+  - Perhitungan laba bersih (Omzet - Modal).
+  - Statistik produk terlaris.
+- **Riwayat Penjualan:**
+  - Filter rentang tanggal.
+  - Pencarian nota tertentu.
+  - Cetak ulang struk dari riwayat.
 
-## Run Locally
+## 🛠️ Tech Stack
 
-**Prerequisites:**  Node.js
+- **Frontend:** React 18, Vite, TypeScript
+- **Styling:** Tailwind CSS, Framer Motion (Animations)
+- **Database:** Supabase (PostgreSQL)
+- **Icons:** Lucide React
+- **Deployment:** Vercel
 
+## ⚙️ Cara Instalasi Lokal
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+1. Clone repository ini.
+2. Install dependensi:
+   ```bash
+   npm install
+   ```
+3. Buat file `.env` dan tambahkan kredensial Supabase Anda:
+   ```env
+   VITE_SUPABASE_URL=your_supabase_url
+   VITE_SUPABASE_KEY=your_supabase_anon_key
+   ```
+4. Jalankan aplikasi:
+   ```bash
+   npm run dev
+   ```
+
+## 🌐 Deployment di Vercel
+
+Aplikasi ini sudah siap untuk dideploy ke Vercel:
+1. Hubungkan repository GitHub Anda ke Vercel.
+2. Tambahkan **Environment Variables** (`VITE_SUPABASE_URL` dan `VITE_SUPABASE_KEY`) di dashboard Vercel.
+3. Klik Deploy.
+
+---
+*Dikembangkan untuk efisiensi operasional Toko Minuman.*
