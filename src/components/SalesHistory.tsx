@@ -4,30 +4,43 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { Search, ChevronLeft, ChevronRight, Printer, CheckCircle2, ChevronDown, ChevronUp, Receipt } from 'lucide-react';
+import { Search, ChevronLeft, ChevronRight, Printer, CheckCircle2, ChevronDown, ChevronUp, Receipt, Calendar, Filter } from 'lucide-react';
 import { Sale } from '../types';
 import { callDb, getNowWIB, logAction } from '../lib/api';
 import { cn, formatCurrency } from '../lib/utils';
 import { motion, AnimatePresence } from 'motion/react';
+import { format } from 'date-fns';
 
 export const SalesHistory: React.FC = () => {
   const [sales, setSales] = useState<Sale[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState<'Semua' | 'Lunas' | 'Belum Lunas'>('Semua');
+  const [dateRange, setDateRange] = useState({
+    start: format(new Date(), 'yyyy-MM-dd'),
+    end: format(new Date(), 'yyyy-MM-dd')
+  });
   const [expandedId, setExpandedId] = useState<number | null>(null);
   const [page, setPage] = useState(0);
   const itemsPerPage = 10;
 
   const fetchSales = async () => {
     setLoading(true);
-    const data = await callDb("penjualan?select=*,item_penjualan(*,produk(nama_produk))&order=waktu_transaksi.desc");
+    let query = `penjualan?select=*,item_penjualan(*,produk(nama_produk))&waktu_transaksi=gte.${dateRange.start}T00:00:00&waktu_transaksi=lte.${dateRange.end}T23:59:59&order=waktu_transaksi.desc`;
+    
+    if (statusFilter !== 'Semua') {
+      query += `&status_pembayaran=eq.${statusFilter}`;
+    }
+
+    const data = await callDb(query);
     if (data) setSales(data);
     setLoading(false);
   };
 
   useEffect(() => {
     fetchSales();
-  }, []);
+    setPage(0);
+  }, [dateRange, statusFilter]);
 
   const filteredSales = sales.filter(s => 
     (s.catatan || '').toLowerCase().includes(search.toLowerCase()) || 
@@ -141,17 +154,55 @@ export const SalesHistory: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+      <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-4">
         <h2 className="text-3xl font-bold tracking-tight">🧾 Riwayat Penjualan</h2>
-        <div className="relative w-full md:w-64">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-          <input 
-            type="text" 
-            placeholder="Cari Nota / Catatan..." 
-            value={search}
-            onChange={(e) => {setSearch(e.target.value); setPage(0);}}
-            className="w-full bg-[#1E293B] border border-[#334155] rounded-xl py-2 pl-10 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+        
+        <div className="flex flex-col md:flex-row items-center gap-4 w-full xl:w-auto">
+          {/* Date Picker */}
+          <div className="flex items-center gap-2 bg-[#1E293B] p-2 rounded-xl border border-[#334155] w-full md:w-auto">
+            <Calendar className="w-4 h-4 text-slate-500" />
+            <div className="flex items-center gap-2 text-[10px] font-bold uppercase">
+              <input 
+                type="date" 
+                value={dateRange.start}
+                onChange={(e) => setDateRange({...dateRange, start: e.target.value})}
+                className="bg-transparent text-white outline-none"
+              />
+              <span className="text-slate-600">—</span>
+              <input 
+                type="date" 
+                value={dateRange.end}
+                onChange={(e) => setDateRange({...dateRange, end: e.target.value})}
+                className="bg-transparent text-white outline-none"
+              />
+            </div>
+          </div>
+
+          {/* Status Filter */}
+          <div className="flex items-center gap-2 bg-[#1E293B] p-2 rounded-xl border border-[#334155] w-full md:w-auto">
+            <Filter className="w-4 h-4 text-slate-500" />
+            <select 
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value as any)}
+              className="bg-transparent text-white outline-none text-[10px] font-black uppercase tracking-widest cursor-pointer"
+            >
+              <option value="Semua" className="bg-[#1E293B]">Semua Status</option>
+              <option value="Lunas" className="bg-[#1E293B]">Lunas</option>
+              <option value="Belum Lunas" className="bg-[#1E293B]">Belum Lunas</option>
+            </select>
+          </div>
+
+          {/* Search Bar */}
+          <div className="relative w-full md:w-64">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+            <input 
+              type="text" 
+              placeholder="Cari Nota / Catatan..." 
+              value={search}
+              onChange={(e) => {setSearch(e.target.value); setPage(0);}}
+              className="w-full bg-[#1E293B] border border-[#334155] rounded-xl py-2 pl-10 pr-4 text-[10px] font-black uppercase tracking-widest focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
         </div>
       </div>
 

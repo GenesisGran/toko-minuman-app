@@ -18,7 +18,7 @@ export const Reports: React.FC = () => {
   const [salesData, setSalesData] = useState<Sale[]>([]);
   const [loading, setLoading] = useState(true);
   const [dateRange, setDateRange] = useState({
-    start: format(subDays(new Date(), 6), 'yyyy-MM-dd'),
+    start: format(new Date(), 'yyyy-MM-dd'),
     end: format(new Date(), 'yyyy-MM-dd')
   });
 
